@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import readline from 'readline';
 import { connectToMongo, vectorSearch, displayResults } from './index.js';
+import { generateResponse } from '../rag-application/generation.js';
 
 //standard input setup
 const rl = readline.createInterface({
@@ -20,6 +21,7 @@ async function promptQuery(queryText) {
 //parse input filters
 function parseFilters(input) {
     const filters = {};
+    const pairs = input.split(',');
 
     for (const pair of pairs) {
         const [key, value] = pair.split(/[:=]/).map(s => s.trim());
@@ -52,7 +54,6 @@ async function searchLoop() {
     console.log('  - Type "examples" to see sample searches');
     console.log('  - Type "exit" to leave\n');
 
-
     while (true) {
         try {
         const query = await promptQuery('Enter your search query: ');
@@ -79,12 +80,18 @@ async function searchLoop() {
         const limit = parseInt(limitInput) || 5;
 
         //get filters
-        const inputFilters = await promptQuery('filters (optional): , e.g., genre:Action, minYear:2000): ');
-        const filters = parseFilters(inputFilters);
+        const filters = parseFilters(filterInput);
 
         //search with optional filters
         const results = await vectorSearch(query, limit, filters);
-        displayResults(results);
+        if (results.length === 0) {
+            console.log("No relevant movies found for that query.");
+            continue;
+        }
+
+        //generate response using retrieved results
+        const answer = await generateResponse(query, results);
+        console.log('Generated Response:\n', answer);
 
         console.log('\n');
         } catch (error) {
