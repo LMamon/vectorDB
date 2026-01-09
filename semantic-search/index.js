@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { MongoClient } from 'mongodb';
-import VoyageAI from 'voyageai';
+import { VoyageAIClient } from 'voyageai';
 
 const config = {
   mongoUri: process.env.MONGODB_URI,
@@ -12,7 +12,7 @@ const config = {
 
 // initialize clients
 const mgc = new MongoClient(config.mongoUri);
-const vo = new VoyageAI({ apiKey: config.voyageApiKey });
+const vo = new VoyageAIClient({ apiKey: config.voyageApiKey });
 
 // connect to MongoDB
 async function connectToMongo() {
@@ -26,7 +26,7 @@ async function connectToMongo() {
         return false;
     }}
 
-connectToMongo().catch(console.error);
+// connectToMongo().catch(console.error);
 
 //generate embedding for text query
 async function generateEmbedding(text) {
@@ -37,8 +37,8 @@ async function generateEmbedding(text) {
         input_type: 'query'
     });
 
-    console.log(`Generated Embeddings: ${embeddingResponse.embedding[0].length} dimensions`);
-    return embeddingResponse.embedding[0];
+    console.log(`Generated Embeddings: ${embeddingResponse.data[0].embedding.length} dimensions`);
+    return embeddingResponse.data[0].embedding;
     } catch (error) {
         console.error('Error generating embedding:', error);
         throw error;
@@ -60,7 +60,7 @@ async function vectorSearch(query, topK = 5, filters = {}) {
             {
                 "$vectorSearch": {
                     "index": config.vectorIndexName,
-                    "path": "plot_embedding",
+                    "path": "plot_embedding_user",
                     "queryVector": queryEmbedding,
                     "numCandidates": 150,
                     "limit": topK
@@ -167,6 +167,6 @@ export {
     displayResults,
 };
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-    example();
-}
+// if (import.meta.url === `file://${process.argv[1]}`) {
+//     example();
+// }
