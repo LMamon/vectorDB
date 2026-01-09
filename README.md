@@ -182,5 +182,4 @@ vectorDB/
 - Check Voyage AI API limits (free tier: 50K tokens/month)
 
 ## License
-
-MIT
+Apache 2.0
