@@ -1,0 +1,28 @@
+{
+  "name": "vectordb",
+  "version": "1.0.0",
+  "description": "demo of semantic search and RAG pipeline using VoyageAI, MongoDB Atlas, and Ollama",
+  "main": "index.js",
+  "scripts": {
+    "start": "node semantic-search/index.js",
+    "search": "node semantic-search/search.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LMamon/vectorDB.git"
+  },
+  "keywords": [],
+  "author": "Louis Mamon",
+  "license": "Apache-2.0",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/LMamon/vectorDB/issues"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "mongodb": "^6.3.0",
+    "ollama": "^0.6.3",
+    "readline": "^1.3.0",
+    "voyageai": "^0.0.3"
+  }
+}
