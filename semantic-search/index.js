@@ -8,9 +8,9 @@ const config = {
   voyageApiKey: process.env.VOYAGEAI_API_KEY,
   collectionName: process.env.COLLECTION_NAME,
   vectorIndexName: process.env.VECTOR_INDEX_NAME,
+  path: process.env.PATH
 };
 
-// initialize clients
 const mgc = new MongoClient(config.mongoUri);
 const vo = new VoyageAIClient({ apiKey: config.voyageApiKey });
 
@@ -26,9 +26,6 @@ async function connectToMongo() {
         return false;
     }}
 
-// connectToMongo().catch(console.error);
-
-//generate embedding for text query
 async function generateEmbedding(text) {
     try {
     const embeddingResponse = await vo.embed({
@@ -45,7 +42,6 @@ async function generateEmbedding(text) {
     }
 }
 
-// perform vector search on plots
 async function vectorSearch(query, topK = 5, filters = {}) {
     try {
         console.log('Generating embedding for query...');
@@ -55,12 +51,11 @@ async function vectorSearch(query, topK = 5, filters = {}) {
         await mgc.connect();
         const collection = mgc.db(config.DbName).collection(config.collectionName);
 
-        // define pipeline for vector search
         const pipeline = [
             {
                 "$vectorSearch": {
                     "index": config.vectorIndexName,
-                    "path": "plot_embedding_user",
+                    "path": config.path,
                     "queryVector": queryEmbedding,
                     "numCandidates": 150,
                     "limit": topK
@@ -81,7 +76,7 @@ async function vectorSearch(query, topK = 5, filters = {}) {
                     score: { $meta: 'vectorSearchScore' }
                 }
             }];
-            // add filters if provided
+
             if (Object.keys(filters).length > 0) {
             const filterStage = { $match: {} };
             
@@ -134,8 +129,6 @@ function displayResults(results) {
     console.log('-'.repeat(80));
 };
 
-
-// example usage
 async function example() {
     await connectToMongo();
 
@@ -167,6 +160,3 @@ export {
     displayResults,
 };
 
-// if (import.meta.url === `file://${process.argv[1]}`) {
-//     example();
-// }
