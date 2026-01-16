@@ -1,4 +1,4 @@
-# VectorDB - Free RAG with MongoDB Atlas Vector Search
+#  RAG with MongoDB Atlas Vector Search
 
 A demonstration of building a **Retrieval-Augmented Generation (RAG)** system using free and open-source tools. This project combines MongoDB Atlas Vector Search, Voyage AI embeddings, and local LLM inference with Ollama to create a fully functional semantic movie search and Q&A system.
 
@@ -108,18 +108,6 @@ Add optional filters:
 - `minYear:2000, maxYear:2023`
 - `minRating:7.5`
 
-### Programmatic Usage
-
-```javascript
-import { vectorSearch, generateResponse } from './semantic-search/index.js';
-
-const query = "movies about time travel";
-const results = await vectorSearch(query, 5);
-const answer = await generateResponse(query, 5);
-
-console.log(answer);
-```
-
 ## Project Structure
 
 ```
@@ -133,26 +121,6 @@ vectorDB/
 ├── .env                  # Environment variables 
 └── README.md
 ```
-
-## Key Files
-
-### `semantic-search/index.js`
-- `vectorSearch(query, topK, filters)` - Performs semantic search on movie plots
-- `generateEmbedding(text)` - Creates embeddings using Voyage AI
-- `connectToMongo()` - Manages MongoDB connection
-
-### `rag-application/generation.js`
-- `generateResponse(query, topK, filters)` - Combines retrieved context with LLM generation
-- `buildGenerationPrompt(originalPrompt, results)` - Constructs the prompt for the LLM
-
-## Cost Breakdown
-
-| Component | Cost |
-|-----------|------|
-| MongoDB Atlas | Free tier (512MB) |
-| Voyage AI | ~$0 (free tier: 50K tokens/month) |
-| Ollama | Free & open-source |
-| **Total** | **Free** |
 
 ## Environment Variables Reference
 
